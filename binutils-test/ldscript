@@ -1,0 +1,46 @@
+OUTPUT_FORMAT("elf32-i386", "elf32-i386",
+		  "elf32-i386")
+    OUTPUT_ARCH(i386)
+    ENTRY(_start)
+    /* FORCE_COMMON_ALLOCATION */
+    SEARCH_DIR(/lib); SEARCH_DIR(/usr/lib); SEARCH_DIR(/usr/local/lib); 
+SEARCH_DIR(/usr/i386-linux/lib);
+
+    SECTIONS
+    {
+	.text :
+	{
+		CREATE_OBJECT_SYMBOLS
+		*(.text)
+		*(.hash)
+		*(.dynsym)
+		*(.dynstr)
+		*(.rules)
+		*(.need)
+		_etext = .;
+		__etext = .;
+	}
+	.data :
+	{
+		*(.dynamic)
+		*(.got)
+		*(.plt)
+		*(EXCLUDE_FILE(ad.o) .rel.plt)
+		*(EXCLUDE_FILE(ad.o) .rodata)
+		*(EXCLUDE_FILE(ad.o) .interp)
+		*(.data)
+		*(.linux-dynamic)
+		CONSTRUCTORS
+		_edata = .;
+		__edata = .;
+	}
+	.bss :
+	{
+		*(.bss)
+		*(COMMON)
+	}
+	/DISCARD/ : {
+		*(.note)
+		*(.note.ABI-tag)
+	}
+}
